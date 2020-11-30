@@ -158,25 +158,23 @@ class Game {
 
     __world.update()
 
-    var targetPos = __player.getTarget(__world)
-    var dist = targetPos - __player.pos
-    // System.print("%(__world.getTileAt(targetPos).texture)")
-
     if (Interact.firing) {
-      var targetSprite = __world.getTargetSprite(__player.pos, __player.dir, dist.length)
+      var targetPos = __player.getTarget(__world)
+      var diff = targetPos - __player.pos
+      var dist = diff.length
+      var targetSprite = __world.getTargetSprite(__player.pos, __player.dir, dist)
 
       if (targetSprite) {
-        __world.destroySprite(targetSprite)
         // DESTROY IT
+        __world.destroySprite(targetSprite)
       } else {
         var door = __world.getDoorAt(targetPos)
-        if (door != null && dist.length < 2.75) {
+        if (door != null && dist < 2.75) {
           door.open()
         }
       }
     }
 
-    __dirty = true
     __renderer.update()
   }
 
@@ -192,6 +190,5 @@ class Game {
     //ms = (end - start)
     //ms = ms / counter
     Canvas.print(__angle, 0, 0, Color.white)
-    __dirty = false
   }
 }

@@ -31,5 +31,4 @@ class Door is Entity {
       _mode = 1
     }
   }
-
 }
