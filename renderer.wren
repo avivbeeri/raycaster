@@ -14,6 +14,7 @@ class Renderer {
     _halfW = _w / 2
     _halfH = _h / 2
     _canvas = ImageData.create("buffer", _w, _h)
+    _targetSprite = null
 
     _camera = Vec.new(-1, 0)
     _rayBuffer = List.filled(_w, null).map { [0, 0, 0, 0, 0] }.toList
@@ -25,6 +26,7 @@ class Renderer {
     floors = _world.floorTexture
     ceilings = _world.ceilingTexture
   }
+  targetSprite { _targetSprite }
   getTexture(n) {
     if (n - 1 < _world.textures.count) {
       return _world.textures[n - 1]
@@ -43,6 +45,7 @@ class Renderer {
   }
 
   update() {
+    _targetSprite = null
     _camera.x = -_world.player.dir.y
     _camera.y = _world.player.dir.x
     var position = _world.player.pos
@@ -245,20 +248,15 @@ class Renderer {
     }
 
     var dir = _world.player.dir
-    var cam = -_camera
-    var invDet = 1.0 / (-cam.x * dir.y + dir.x * cam.y)
-
     for (sprite in _world.entities) {
+
       var uDiv = sprite.uDiv
       var vDiv = sprite.vDiv
       var vMove = sprite.vMove
 
-      var spriteX = sprite.pos.x - rayPosition.x
-      var spriteY = sprite.pos.y - rayPosition.y
-
-      var transformX = invDet * (dir.y * spriteX - dir.x * spriteY)
-      //this is actually the depth inside the screen, that what Z is in 3D
-      var transformY = invDet * (cam.y * spriteX - cam.x * spriteY)
+      var transform = _world.getSpriteTransform(rayPosition, dir, sprite)
+      var transformX = transform.x
+      var transformY = transform.y
 
       var vMoveScreen = (vMove / transformY).floor
 
@@ -302,8 +300,12 @@ class Renderer {
             var color = texture.pget(texX, texY)
             if (color.a != 0) {
               _canvas.pset(stripe, y.floor, color)
+
               if (stripe == 1) {
                 _canvas.pset(0, y.floor, color)
+              }
+              if (stripe == _w - 1) {
+                _canvas.pset(_w - 1, y.floor, color)
               }
             }
           }

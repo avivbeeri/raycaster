@@ -11,6 +11,7 @@ import "./renderer" for Renderer
 
 var SPEED = 0.001
 var Interact = InputGroup.new([ Mouse["left"], Keyboard["e"], Keyboard["space"] ], SPEED)
+Interact.repeating = false
 var Forward = InputGroup.new(Keyboard["w"], SPEED)
 var Back = InputGroup.new(Keyboard["s"], -SPEED)
 var LeftBtn = InputGroup.new(Keyboard["a"], -SPEED)
@@ -162,9 +163,16 @@ class Game {
     // System.print("%(__world.getTileAt(targetPos).texture)")
 
     if (Interact.firing) {
-      var door = __world.getDoorAt(targetPos)
-      if (door != null && dist.length < 2.75) {
-        door.open()
+      var targetSprite = __world.getTargetSprite(__player.pos, __player.dir, dist.length)
+
+      if (targetSprite) {
+        __world.destroySprite(targetSprite)
+        // DESTROY IT
+      } else {
+        var door = __world.getDoorAt(targetPos)
+        if (door != null && dist.length < 2.75) {
+          door.open()
+        }
       }
     }
 
@@ -185,19 +193,5 @@ class Game {
     //ms = ms / counter
     Canvas.print(__angle, 0, 0, Color.white)
     __dirty = false
-  }
-
-  static sortSprites(list, position) {
-    var i = 1
-    while (i < list.count) {
-      var x = list[i]
-      var j = i - 1
-      while (j >= 0 && (list[j].pos - position).length < (x.pos - position).length) {
-        list[j + 1] = list[j]
-        j = j - 1
-      }
-      list[j + 1] = x
-      i = i + 1
-    }
   }
 }

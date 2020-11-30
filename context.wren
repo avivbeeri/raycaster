@@ -39,14 +39,6 @@ class World {
 
   getTileAt(position) {
     return map.get(position)
-    // return map.get(position.x.floor, position.y.floor)
-    /*
-    var pos = VEC
-    if (pos.x >= 0 && pos.x < map.width && pos.y >= 0 && pos.y < map.height) {
-      return map[map.height * pos.y + pos.x]
-    }
-    return 1
-    */
   }
 
   getDoorAt(position) {
@@ -186,5 +178,38 @@ class World {
       list[j + 1] = x
       i = i + 1
     }
+  }
+
+  destroySprite(sprite) {
+    _entities = _entities.where {|entity| entity != sprite }.toList
+    return sprite
+  }
+
+  getSpriteTransform(pos, dir, sprite) {
+    var cam = VEC
+    cam.x = dir.y
+    cam.y = -dir.x
+    var invDet = 1.0 / (-cam.x * dir.y + dir.x * cam.y)
+
+    var spriteX = sprite.pos.x - pos.x
+    var spriteY = sprite.pos.y - pos.y
+
+    var transformX = invDet * (dir.y * spriteX - dir.x * spriteY)
+    //this is actually the depth inside the screen, that what Z is in 3D
+    var transformY = invDet * (cam.y * spriteX - cam.x * spriteY)
+    VEC.x = transformX
+    VEC.y = transformY
+    return VEC // copy for the answer
+  }
+
+  getTargetSprite(pos, dir, zDist) {
+    var target = null
+    for (sprite in entities) {
+      var transform = getSpriteTransform(pos, dir, sprite)
+      if (0 < transform.y && transform.y < zDist && transform.x.abs <= 0.5 * sprite.width) {
+        target = sprite
+      }
+    }
+    return target
   }
 }

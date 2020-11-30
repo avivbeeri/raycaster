@@ -112,6 +112,7 @@ class Sprite is Entity {
   octant=(v) { _octant = v % _textures.count }
   currentTex { _textures[octant] }
 
+  width { 1 }
   uDiv { 1 }
   vDiv { 1 }
   vMove { 0 }
@@ -144,4 +145,5 @@ class Pillar is DirectionalSprite {
   solid { true }
   vMove { 0 }
   vDiv { 1 }
+  width { 0.5 }
 }
