@@ -96,8 +96,8 @@ class Game {
     __world.map = __map
     __textures = []
     __world.textures = __textures
-    // __world.floorTexture = Texture.importImg("floor.png")
-    //__world.ceilingTexture = Texture.importImg("ceil.png")
+    // __world.floorTexture = Texture.importImg("res/floor.png")
+    //__world.ceilingTexture = Texture.importImg("res/ceil.png")
     __renderer = Renderer.init(__world, 320, 200)
 
     // Map data
@@ -106,9 +106,9 @@ class Game {
 
     // Prepare textures
     for (i in 1..4) {
-      __textures.add(Texture.importImg("wall%(i).png"))
+      __textures.add(Texture.importImg("res/wall%(i).png"))
     }
-    __textures.add(Texture.importImg("door.png"))
+    __textures.add(Texture.importImg("res/door.png"))
   }
 
   static update() {
