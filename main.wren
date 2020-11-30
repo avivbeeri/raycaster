@@ -36,7 +36,7 @@ var MAP = [
     6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,3,1,1,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
-    2,0,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
+    2,0,2,0,0,0,0,0,0,0,0,7,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,5,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,2,0,0,0,0,0,0,0,0,3,1,1,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,2,5,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
@@ -80,10 +80,19 @@ class Game {
     for (y in 0...MAP_HEIGHT) {
       for (x in 0...MAP_WIDTH) {
         var type = MAP[y * MAP_WIDTH + x]
-        __map.set(x, y, Tile.new(type, {
-          "solid": type != 0,
-          "door": type == 5
-        }))
+        if (type == 7) {
+          __map.set(x, y, Tile.new(1, {
+            "solid": true,
+            "door": false,
+            "thin": true
+          }))
+        } else {
+          __map.set(x, y, Tile.new(type, {
+            "solid": type != 0,
+            "door": type == 5,
+            "thin": type == 5
+          }))
+        }
       }
     }
     __camera = __player.dir.perp
@@ -151,6 +160,7 @@ class Game {
 
     var targetPos = __player.getTarget(__world)
     var dist = targetPos - __player.pos
+    // System.print("%(__world.getTileAt(targetPos).texture)")
 
     if (Interact.firing) {
       var door = __world.getDoorAt(targetPos)

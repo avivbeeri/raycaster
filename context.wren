@@ -2,21 +2,6 @@ import "math" for Vec, M
 import "./map" for TileMap, Tile
 var VEC = Vec.new()
 
-/*
-class TileMap {
-  construct new(tiles, width, height) {
-    _tiles = tiles
-    _width = width
-    _height = height
-  }
-
-  [n] { _tiles[n] }
-  width { _width }
-  height { _height }
-
-}
-*/
-
 class World {
   construct new() {}
   player { _player }
@@ -131,9 +116,12 @@ class World {
       }
 
       var tile = getTileAt(mapPos)
-      if (tile["door"]) {
-        // Figure out the door position
-        var doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
+      if (tile["thin"] || tile["door"]) {
+        var doorState = 1
+        if (tile["door"]) {
+          // Figure out the door position
+          doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
+        }
         var adj
         var ray_mult
         // Adjustment

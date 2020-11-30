@@ -16,7 +16,7 @@ class Renderer {
     _canvas = ImageData.create("buffer", _w, _h)
 
     _camera = Vec.new(-1, 0)
-    _rayBuffer = List.filled(_w, null).map { [0, 0, 0, 0] }.toList
+    _rayBuffer = List.filled(_w, null).map { [0, 0, 0, 0, 0] }.toList
     _DIST_LOOKUP = []
     for (y in 0..._h) {
       _DIST_LOOKUP.add(_h / (2.0  * y - _h))
@@ -24,6 +24,11 @@ class Renderer {
     _dirty = true
     floors = _world.floorTexture
     ceilings = _world.ceilingTexture
+  }
+  getTexture(n) {
+    if (n - 1 < _world.textures.count) {
+      return _world.textures[n - 1]
+    }
   }
 
   width { _w }
@@ -56,7 +61,7 @@ class Renderer {
         var tile = _world.getTileAt(mapPos)
 
         var perpWallDistance
-        if (tile["door"] == true) {
+        if (tile["thin"] == true || tile["door"] == true) {
           // If it's a door, we need to shift the map position to draw it in the correct location
           if (side == 0) {
             mapPos.x = mapPos.x + stepDirection.x / 2
@@ -75,6 +80,7 @@ class Renderer {
         ray[1] = mapPos
         ray[2] = side
         ray[3] = rayDirection
+        ray[4] = tile
       }
     }
 
@@ -107,13 +113,10 @@ class Renderer {
       var mapPos = ray[1]
       var side = ray[2]
       var rayDirection = ray[3]
+      var tile = ray[4]
 
       var color = Color.black
-      var tile = _world.getTileAt(mapPos)
-      var texture
-      Fiber.new {
-        texture = _world.textures[tile.texture - 1]
-      }.try()
+      var texture = getTexture(tile.texture)
 
       var lineHeight = M.abs(_h / perpWallDistance)
       var drawStart = (-lineHeight / 2) + (_halfH)
@@ -225,22 +228,6 @@ class Renderer {
             c = ceilTex.pget(ceilTexX, ceilTexY)
             _canvas.pset(x.floor, (_h - y.floor - 1), c)
           }
-          /*
-
-          if (_drawFloor) {
-            var floorTexX = ((currentFloorX * (floorTex.width)).floor % (floorTex.width))
-            var floorTexY = ((currentFloorY * (floorTex.height)).floor % (floorTex.height))
-            c = floorTex.pget(floorTexX, floorTexY)
-            _canvas.pset(x.floor, y.floor, c)
-          }
-          if (_drawCeiling) {
-            var ceilTexX = ((currentFloorX * (ceilTex.width)).floor % ceilTex.width)
-            var ceilTexY = ((currentFloorY * (ceilTex.height)).floor % ceilTex.height)
-
-            c = ceilTex.pget(ceilTexX, ceilTexY)
-            _canvas.pset(x.floor, (_h - y.floor - 1), c)
-          }
-          */
         }
         localEnd = System.clock
         ms = ms + (localEnd - localStart)
