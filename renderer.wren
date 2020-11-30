@@ -61,12 +61,22 @@ class Renderer {
         var tile = _world.getTileAt(mapPos)
 
         var perpWallDistance
-        if (tile["thin"] == true || tile["door"] == true) {
+        if (tile["door"] == true) {
           // If it's a door, we need to shift the map position to draw it in the correct location
           if (side == 0) {
-            mapPos.x = mapPos.x + stepDirection.x / 2
+            mapPos.x = mapPos.x + stepDirection.x * 0.5
           } else {
-            mapPos.y = mapPos.y + stepDirection.y / 2
+            mapPos.y = mapPos.y + stepDirection.y * 0.5
+          }
+        } else if (tile["thin"]) {
+          // If it's a door, we need to shift the map position to draw it in the correct location
+          var offsetX = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.x.sign, 0.5)
+          var offsetY = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.y.sign, 0.5)
+
+          if (side == 0) {
+            mapPos.x = mapPos.x + stepDirection.x * offsetX
+          } else {
+            mapPos.y = mapPos.y + stepDirection.y * offsetY
           }
         }
         if (side == 0) {

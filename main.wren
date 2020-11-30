@@ -84,13 +84,12 @@ class Game {
           __map.set(x, y, Tile.new(1, {
             "solid": true,
             "door": false,
-            "thin": true
+            "thin": -0.25
           }))
         } else {
           __map.set(x, y, Tile.new(type, {
             "solid": type != 0,
-            "door": type == 5,
-            "thin": type == 5
+            "door": type == 5
           }))
         }
       }

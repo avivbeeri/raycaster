@@ -151,15 +151,18 @@ class World {
           trueDeltaX = 100
         }
 
+        var offsetX = 0.5 + M.mid(-0.5, (tile["thin"] || 0) * stepDirection.x.sign, 0.5)
+        var offsetY = 0.5 + M.mid(-0.5, (tile["thin"] || 0) * stepDirection.y.sign, 0.5)
+
         if (side == 0) {
           // var halfY = mapPos.y + sideDistanceY * 0.5
           var true_y_step = (trueDeltaX * trueDeltaX - 1).sqrt
-          var half_step_in_y = rye2 + (stepDirection.y * true_y_step) * 0.5
-          hit = (half_step_in_y.floor == mapPos.y) && (1 - 2*(half_step_in_y - mapPos.y)).abs > 1 - doorState
+          var half_step_in_y = rye2 + (stepDirection.y * true_y_step) * offsetX
+          hit = (half_step_in_y.floor == mapPos.y) && (1 - 2*(half_step_in_y - mapPos.y)).abs >= 1 - doorState
         } else {
           var true_x_step = (trueDeltaY * trueDeltaY - 1).sqrt
-          var half_step_in_x = rxe2 + (stepDirection.x * true_x_step) * 0.5
-          hit = (half_step_in_x.floor == mapPos.x) && (1 - 2*(half_step_in_x - mapPos.x)).abs > 1 - doorState
+          var half_step_in_x = rxe2 + (stepDirection.x * true_x_step) * offsetY
+          hit = (half_step_in_x.floor == mapPos.x) && (1 - 2*(half_step_in_x - mapPos.x)).abs >= 1 - doorState
         }
       } else {
         hit = tile["solid"] == true
