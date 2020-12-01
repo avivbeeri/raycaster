@@ -27,6 +27,7 @@ class World {
   update() {
     player.update(this)
     entities.each {|sprite| sprite.update(this) }
+    World.filterSprites(entities)
     World.sortSprites(entities, player.pos)
 
     doors.each {|door|
@@ -35,6 +36,21 @@ class World {
       }
       door.update()
     }
+  }
+
+  isSpaceOccupied(pos) {
+    var solid = false
+    for (entity in entities) {
+      var diffX = entity.pos.x - pos.x
+      var diffY = entity.pos.y - pos.y
+      if ((diffX * diffX + diffY*diffY).sqrt <= (0.5 + 0.5)) {
+        solid = solid || entity.solid
+      }
+      if (solid) {
+        break
+      }
+    }
+    return solid
   }
 
   getTileAt(position) {
@@ -166,6 +182,19 @@ class World {
     return result
   }
 
+  static filterSprites(list) {
+    var i = 0
+    var last = list.count - 1
+    while (i < list.count) {
+      if (!list[i].alive) {
+        list[i] = list[last]
+        list.removeAt(last)
+        last = last - 1
+      }
+      i = i + 1
+    }
+  }
+
   static sortSprites(list, position) {
     var i = 1
     while (i < list.count) {
@@ -181,8 +210,7 @@ class World {
   }
 
   destroySprite(sprite) {
-    _entities = _entities.where {|entity| entity != sprite }.toList
-    return sprite
+    sprite.alive = false
   }
 
   getSpriteTransform(pos, dir, sprite) {

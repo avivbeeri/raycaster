@@ -11,7 +11,10 @@ var MOVE_SPEED = 2/ 60
 class Entity {
   construct new(position) {
     _pos = position
+    _alive = true
   }
+  alive { _alive }
+  alive=(v) { _alive = v }
   solid { false }
   pos { _pos }
   pos=(v) { _pos = v }
@@ -49,14 +52,7 @@ class Player is Entity {
     this.pos.x = this.pos.x + this.vel.x
     solid = context.isTileHit(pos)
     if (!solid) {
-      for (entity in context.entities) {
-        if ((entity.pos - this.pos).length < 0.5) {
-          solid = solid || entity.solid
-        }
-        if (solid) {
-          break
-        }
-      }
+      solid = context.isSpaceOccupied(pos)
     }
     if (solid) {
       this.pos.x = oldPosition.x
@@ -69,14 +65,7 @@ class Player is Entity {
     this.pos.y = this.pos.y + this.vel.y
     solid = context.isTileHit(this.pos)
     if (!solid) {
-      for (entity in context.entities) {
-        if ((entity.pos - this.pos).length < 0.5) {
-          solid = solid || entity.solid
-        }
-        if (solid) {
-          break
-        }
-      }
+      solid = context.isSpaceOccupied(pos)
     }
     if (solid) {
       this.pos.x = oldPosition.x
