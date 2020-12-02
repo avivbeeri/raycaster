@@ -257,55 +257,57 @@ class Renderer {
       var transform = _world.getSpriteTransform(rayPosition, dir, sprite)
       var transformX = transform.x
       var transformY = transform.y
+      if (transformY > 0) {
 
-      var vMoveScreen = (vMove / transformY).floor
+        var vMoveScreen = (vMove / transformY).floor
 
-      var spriteScreenX = ((_halfW) * (1 + transformX / transformY)).floor
-      // Prevent fisheye
-      var spriteHeight = ((_h / transformY).abs / vDiv).floor
-      var drawStartY = (((_h - spriteHeight) / 2) + vMoveScreen).floor
-      if (drawStartY < 0) {
-        drawStartY = 0
-      }
-      var drawEndY = (((_h + spriteHeight) / 2) + vMoveScreen).floor
-      if (drawEndY >= _h) {
-        drawEndY = _h
-      }
+        var spriteScreenX = ((_halfW) * (1 + transformX / transformY)).floor
+        // Prevent fisheye
+        var spriteHeight = ((_h / transformY).abs / vDiv).floor
+        var drawStartY = (((_h - spriteHeight) / 2) + vMoveScreen).floor
+        if (drawStartY < 0) {
+          drawStartY = 0
+        }
+        var drawEndY = (((_h + spriteHeight) / 2) + vMoveScreen).floor
+        if (drawEndY >= _h) {
+          drawEndY = _h - 1
+        }
 
-      // Optimisation note: this is actually half of spriteWidth, because we typically divide it by 2
-      var spriteWidth = (((_h / transformY).abs / uDiv) / 2).floor
-      var drawStartX = (spriteScreenX - spriteWidth).floor
-      if (drawStartX < 0) {
-        drawStartX = 0
-      }
-      var drawEndX = (spriteScreenX + spriteWidth).floor
-      if (drawEndX >= _w) {
-        drawEndX = _w - 1
-      }
+        // Optimisation note: this is actually half of spriteWidth, because we typically divide it by 2
+        var spriteWidth = (((_h / transformY).abs / uDiv) / 2).floor
+        var drawStartX = (spriteScreenX - spriteWidth).floor
+        if (drawStartX < 0) {
+          drawStartX = 0
+        }
+        var drawEndX = (spriteScreenX + spriteWidth).floor
+        if (drawEndX >= _w) {
+          drawEndX = _w - 1
+        }
 
-      var texture = sprite.currentTex
-      var texWidth = texture.width - 1
-      var texHeight = texture.height - 1
-      for (stripe in drawStartX...drawEndX) {
-        var texX = ((stripe - (-spriteWidth + spriteScreenX)) * texWidth / (spriteWidth * 2)).abs
+        var texture = sprite.currentTex
+        var texWidth = texture.width - 1
+        var texHeight = texture.height - 1
+        for (stripe in drawStartX...drawEndX) {
+          var texX = ((stripe - (-spriteWidth + spriteScreenX)) * texWidth / (spriteWidth * 2)).abs
 
-        // Conditions for this if:
-        //1) it's in front of camera plane so you don't see things behind you
-        //2) it's on the screen (left)
-        //3) it's on the screen (right)
-        //4) ZBuffer, with perpendicular distance
-        if (transformY > 0 && stripe > 0 && stripe < _w && transformY < _rayBuffer[stripe][0]) {
-          for (y in drawStartY...drawEndY) {
-            var texY = (((y - vMoveScreen) - (-spriteHeight / 2 + _h / 2)) * texHeight / spriteHeight).abs
-            var color = texture.pget(texX, texY)
-            if (color.a != 0) {
-              _canvas.pset(stripe, y.floor, color)
+          // Conditions for this if:
+          //1) it's in front of camera plane so you don't see things behind you
+          //2) it's on the screen (left)
+          //3) it's on the screen (right)
+          //4) ZBuffer, with perpendicular distance
+          if (stripe > 0 && stripe < _w && transformY < _rayBuffer[stripe][0]) {
+            for (y in drawStartY...drawEndY) {
+              var texY = (((y - vMoveScreen) - (-spriteHeight / 2 + _h / 2)) * texHeight / spriteHeight).abs
+              var color = texture.pget(texX, texY)
+              if (color.a != 0) {
+                _canvas.pset(stripe, y.floor, color)
 
-              if (stripe == 1) {
-                _canvas.pset(0, y.floor, color)
-              }
-              if (stripe == _w - 1) {
-                _canvas.pset(_w - 1, y.floor, color)
+                if (stripe == 1) {
+                  _canvas.pset(0, y.floor, color)
+                }
+                if (stripe == _w - 1) {
+                  _canvas.pset(_w - 1, y.floor, color)
+                }
               }
             }
           }
