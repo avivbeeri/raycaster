@@ -1,5 +1,6 @@
 import "math" for M, Vec
 
+
 var PI_RAD = Num.pi / 180
 var VEC = Vec.new()
 var CAST_RESULT = [0, 0, 0, 0]
@@ -117,3 +118,7 @@ class DirectionalSprite is Sprite {
     octant = (angle / _segmentSize).round
   }
 }
+
+
+// to prevent circular dependancy issues, this goes last
+import "core/door" for Door, SecretDoor

@@ -4,14 +4,13 @@ import "math" for Vec, M
 import "input" for Keyboard, Mouse
 import "./core/keys" for InputGroup
 
-import "./core/entity" for Player
+import "./core/entity" for Player, Door
 import "./core/context" for World
 import "./core/map" for TileMap, Tile
 import "./core/texture" for Texture
 import "./core/renderer" for Renderer
 
-import "./sprite" for Pillar, Person
-import "./door" for SecretDoor
+import "./sprites" for Pillar, Person
 
 var SPEED = 0.001
 var Interact = InputGroup.new([ Mouse["left"], Keyboard["e"], Keyboard["space"] ], SPEED)
@@ -24,8 +23,8 @@ var StrafeLeftBtn = InputGroup.new(Keyboard["left"], -1)
 var StrafeRightBtn = InputGroup.new(Keyboard["right"], 1)
 
 var DOORS = [
-  SecretDoor.new(Vec.new(2, 11)),
-  SecretDoor.new(Vec.new(3, 13))
+  Door.new(Vec.new(2, 11)),
+  Door.new(Vec.new(3, 13))
 ]
 
 var MAP_WIDTH = 30
