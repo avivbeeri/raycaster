@@ -90,7 +90,8 @@ class Game {
         } else {
           __map.set(x, y, Tile.new(type, {
             "solid": type != 0,
-            "door": type == 5
+            "door": type == 5,
+            "thin": type == 5 ? -0.25 : null
           }))
         }
       }
@@ -105,8 +106,8 @@ class Game {
     __world.map = __map
     __textures = []
     __world.textures = __textures
-    __world.floorTexture = Texture.importImg("res/floor.png")
-    __world.ceilingTexture = Texture.importImg("res/ceil.png")
+    // __world.floorTexture = Texture.importImg("res/floor.png")
+    // __world.ceilingTexture = Texture.importImg("res/ceil.png")
     __renderer = Renderer.init(__world, 320, 200)
 
     // Map data

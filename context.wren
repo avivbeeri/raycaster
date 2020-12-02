@@ -29,13 +29,7 @@ class World {
     entities.each {|sprite| sprite.update(this) }
     World.filterSprites(entities)
     World.sortSprites(entities, player.pos)
-
-    doors.each {|door|
-      if ((door.pos - player.pos).length >= 2.75) {
-        door.close()
-      }
-      door.update()
-    }
+    doors.each {|door| door.update(this) }
   }
 
   isSpaceOccupied(pos) {
@@ -124,12 +118,12 @@ class World {
       }
 
       var tile = getTileAt(mapPos)
-      if (tile["thin"] || tile["door"]) {
-        var doorState = 1
-        if (tile["door"]) {
-          // Figure out the door position
-          doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
-        }
+      var doorState = 1
+      if (tile["door"]) {
+        // Figure out the door position
+        doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
+      }
+      if (tile["thin"]) {
         var adj
         var ray_mult
         // Adjustment
@@ -159,8 +153,13 @@ class World {
           trueDeltaX = 100
         }
 
-        var offsetX = 0.5 + M.mid(-0.5, (tile["thin"] || 0) * stepDirection.x.sign, 0.5)
-        var offsetY = 0.5 + M.mid(-0.5, (tile["thin"] || 0) * stepDirection.y.sign, 0.5)
+        var offsetX = 0
+        var offsetY = 0
+
+        if (tile["thin"]) {
+          offsetX = 0.5 + M.mid(-0.5, (tile["thin"] || -0.5) * stepDirection.x.sign, 0.5)
+          offsetY = 0.5 + M.mid(-0.5, (tile["thin"] || -0.5) * stepDirection.y.sign, 0.5)
+        }
 
         if (side == 0) {
           // var halfY = mapPos.y + sideDistanceY * 0.5
