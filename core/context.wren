@@ -1,5 +1,5 @@
 import "math" for Vec, M
-import "./map" for TileMap, Tile
+
 var VEC = Vec.new()
 
 class World {

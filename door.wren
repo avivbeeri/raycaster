@@ -1,5 +1,5 @@
 import "math" for M
-import "./sprite" for Entity
+import "./core/entity" for Entity
 
 class Door is Entity {
   construct new(position) {

@@ -2,12 +2,16 @@ import "graphics" for Color, Canvas, ImageData
 import "dome" for Window, Process
 import "math" for Vec, M
 import "input" for Keyboard, Mouse
-import "./keys" for InputGroup
-import "./sprite" for Sprite, Pillar, Player, Person
+import "./core/keys" for InputGroup
+
+import "./core/entity" for Player
+import "./core/context" for World
+import "./core/map" for TileMap, Tile
+import "./core/texture" for Texture
+import "./core/renderer" for Renderer
+
+import "./sprite" for Pillar, Person
 import "./door" for SecretDoor
-import "./context" for World, TileMap, Tile
-import "./texture" for Texture
-import "./renderer" for Renderer
 
 var SPEED = 0.001
 var Interact = InputGroup.new([ Mouse["left"], Keyboard["e"], Keyboard["space"] ], SPEED)
