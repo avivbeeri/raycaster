@@ -105,8 +105,8 @@ class Game {
     __world.map = __map
     __textures = []
     __world.textures = __textures
-    // __world.floorTexture = Texture.importImg("res/floor.png")
-    //__world.ceilingTexture = Texture.importImg("res/ceil.png")
+    __world.floorTexture = Texture.importImg("res/floor.png")
+    __world.ceilingTexture = Texture.importImg("res/ceil.png")
     __renderer = Renderer.init(__world, 320, 200)
 
     // Map data
@@ -179,7 +179,7 @@ class Game {
   }
 
   static draw(alpha) {
-    __renderer.draw()
+    __renderer.draw(alpha)
 
     var centerX = Canvas.width / 2
     var centerY = Canvas.height / 2

@@ -46,10 +46,10 @@ class Renderer {
 
   update() {
     _targetSprite = null
-    _camera.x = -_world.player.dir.y
-    _camera.y = _world.player.dir.x
     var position = _world.player.pos
     var direction = _world.player.dir
+    _camera.x = -direction.y
+    _camera.y = direction.x
 
     if (_dirty) {
       var rayPosition = position
@@ -100,25 +100,25 @@ class Renderer {
   }
 
 
-  draw() {
+  draw(alpha) {
     if (!_dirty) {
       return
     }
+
+    // Profiling variables
     var start
     start = System.clock
     var end
-    cls()
-
     var ms = 0
-    // Floor casting
-    // rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
     var localStart
     var localEnd
     var counter = 0
     // ms = ms / counter * 1000
 
+    cls()
     // Wall casting
     var rayPosition = _world.player.pos
+    // rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
     for (x in 0..._w) {
       counter = counter + 1
       var ray = _rayBuffer[x]
@@ -285,8 +285,8 @@ class Renderer {
         }
 
         var texture = sprite.currentTex
-        var texWidth = texture.width - 1
-        var texHeight = texture.height - 1
+        var texWidth = texture.width
+        var texHeight = texture.height
         for (stripe in drawStartX...drawEndX) {
           var texX = ((stripe - (-spriteWidth + spriteScreenX)) * texWidth / (spriteWidth * 2)).abs
 
