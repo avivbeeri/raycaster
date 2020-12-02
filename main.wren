@@ -4,7 +4,7 @@ import "math" for Vec, M
 import "input" for Keyboard, Mouse
 import "./keys" for InputGroup
 import "./sprite" for Sprite, Pillar, Player, Person
-import "./door" for Door
+import "./door" for SecretDoor
 import "./context" for World, TileMap, Tile
 import "./texture" for Texture
 import "./renderer" for Renderer
@@ -20,8 +20,8 @@ var StrafeLeftBtn = InputGroup.new(Keyboard["left"], -1)
 var StrafeRightBtn = InputGroup.new(Keyboard["right"], 1)
 
 var DOORS = [
-  Door.new(Vec.new(2, 11)),
-  Door.new(Vec.new(3, 13))
+  SecretDoor.new(Vec.new(2, 11)),
+  SecretDoor.new(Vec.new(3, 13))
 ]
 
 var MAP_WIDTH = 30
@@ -91,7 +91,7 @@ class Game {
           __map.set(x, y, Tile.new(type, {
             "solid": type != 0,
             "door": type == 5,
-            "thin": type == 5 ? -0.25 : null
+            "thin": type == 5 ? 0.5 : null
           }))
         }
       }

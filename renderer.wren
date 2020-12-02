@@ -72,11 +72,18 @@ class Renderer {
             mapPos.y = mapPos.y + stepDirection.y * 0.5
           }
           } else */
+        var offsetX = 0
+        var offsetY = 0
+        if (tile["door"]) {
+          offsetX = 0.5
+          offsetY = 0.5
+        }
         if (tile["thin"]) {
           // If it's a door, we need to shift the map position to draw it in the correct location
-          var offsetX = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.x.sign, 0.5)
-          var offsetY = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.y.sign, 0.5)
-
+          offsetX = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.x.sign, 0.5)
+          offsetY = 0.5 + M.mid(-0.5, tile["thin"] * stepDirection.y.sign, 0.5)
+        }
+        if (tile["door"] || offsetX != 0 || offsetY != 0) {
           if (side == 0) {
             mapPos.x = mapPos.x + stepDirection.x * offsetX
           } else {

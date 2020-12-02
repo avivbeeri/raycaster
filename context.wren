@@ -118,12 +118,12 @@ class World {
       }
 
       var tile = getTileAt(mapPos)
-      var doorState = 1
-      if (tile["door"]) {
-        // Figure out the door position
-        doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
-      }
-      if (tile["thin"]) {
+      if (tile["thin"] || tile["door"]) {
+        var doorState = 1
+        if (tile["door"]) {
+          // Figure out the door position
+          doorState = ignoreDoors ? 1 : getDoorAt(mapPos).state
+        }
         var adj
         var ray_mult
         // Adjustment
@@ -153,8 +153,13 @@ class World {
           trueDeltaX = 100
         }
 
+0
         var offsetX = 0
         var offsetY = 0
+        if (tile["door"]) {
+          offsetX = 0.5
+          offsetY = 0.5
+        }
 
         if (tile["thin"]) {
           offsetX = 0.5 + M.mid(-0.5, (tile["thin"] || -0.5) * stepDirection.x.sign, 0.5)
