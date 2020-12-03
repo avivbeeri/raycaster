@@ -5,7 +5,7 @@ This code example provides everything you need to make a Wolfenstein 3D-style ga
 
 ## Getting started is easy:
 
-1) Install DOME, following the [installation guide].
+1) Install DOME, following the [installation guide](https://domeengine.com/installation).
 2) Clone this repository and navigate to the correct folder.
 3) Run DOME, using the `main.wren` file as an entry point.
 
