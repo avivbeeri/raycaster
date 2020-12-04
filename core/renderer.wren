@@ -139,13 +139,14 @@ class Renderer {
       var color = Color.black
       var texture = getTexture(tile.texture)
 
-      var lineHeight = M.abs(_h / perpWallDistance)
+      // var lineHeight = M.abs(_h / perpWallDistance)
+      var lineHeight = M.max(0, _h / perpWallDistance)
       var drawStart = (-lineHeight / 2) + (_halfH)
       var drawEnd = (lineHeight / 2) + (_halfH)
       // If we are too close to a block, the lineHeight is gigantic, resulting in slowness
       // So we clip the drawStart-End and _then_ calculate the texture position.
-      drawStart = M.max(0, drawStart)
-      drawEnd = M.min(_h, drawEnd)
+      drawStart = M.max(0, drawStart.round)
+      drawEnd = M.min(_h, drawEnd.round)
 
       var wallX
       if (side == 0) {
@@ -170,17 +171,17 @@ class Renderer {
       } else {
         var texWidth = texture.width
         var texX = wallX * texWidth
-        if (side == 0 && rayDirection.x <= 0) {
+        if (side == 0 && rayDirection.x < 0) {
           texX = texWidth - texX
         }
         if (side == 1 && rayDirection.y > 0) {
           texX = texWidth - texX
         }
-        texX = texX.floor
-        var texStep = 1.0 * texture.height / lineHeight
+        texX = texX // texX.floor
+        var texStep = texture.height / lineHeight
         var texPos = (drawStart - _halfH + lineHeight / 2) * texStep
         for (y in drawStart...drawEnd) {
-          var texY = (texPos).floor
+          var texY = texPos// (texPos).floor
           if (side == 1) {
             color = texture.pgetDark(texX, texY)
           } else {
