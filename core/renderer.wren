@@ -64,7 +64,7 @@ class Renderer {
         var tile = _world.getTileAt(mapPos)
 
         var perpWallDistance
-        /* if (tile["door"] == true) {
+        /* if (tile["door"]) {
           // If it's a door, we need to shift the map position to draw it in the correct location
           if (side == 0) {
             mapPos.x = mapPos.x + stepDirection.x * 0.5
@@ -169,19 +169,27 @@ class Renderer {
           _canvas.pset(x, y, color)
         }
       } else {
+
         var texWidth = texture.width
         var texX = wallX * texWidth
+        if (tile["door"]) {
+          if (wallX < 0.5) {
+            texX = wallX - (tile["door"].state - 1) * 0.5
+          } else {
+            texX = wallX + (tile["door"].state + 1) * 0.5
+          }
+          texX = texX * texWidth
+        }
         if (side == 0 && rayDirection.x < 0) {
           texX = texWidth - texX
         }
         if (side == 1 && rayDirection.y > 0) {
           texX = texWidth - texX
         }
-        texX = texX // texX.floor
         var texStep = texture.height / lineHeight
         var texPos = (drawStart - _halfH + lineHeight / 2) * texStep
         for (y in drawStart...drawEnd) {
-          var texY = texPos// (texPos).floor
+          var texY = texPos
           if (side == 1) {
             color = texture.pgetDark(texX, texY)
           } else {

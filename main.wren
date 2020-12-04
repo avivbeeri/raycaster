@@ -4,7 +4,7 @@ import "math" for Vec, M
 import "input" for Keyboard, Mouse
 import "./core/keys" for InputGroup
 
-import "./core/entity" for Player, Door
+import "./core/entity" for Player, Door, SecretDoor
 import "./core/context" for World
 import "./core/map" for TileMap, Tile
 import "./core/texture" for Texture
@@ -22,15 +22,10 @@ var RightBtn = InputGroup.new(Keyboard["d"], SPEED)
 var StrafeLeftBtn = InputGroup.new(Keyboard["left"], -1)
 var StrafeRightBtn = InputGroup.new(Keyboard["right"], 1)
 
-var DOORS = [
-  Door.new(Vec.new(2, 11)),
-  Door.new(Vec.new(3, 13))
-]
-
 var MAP_WIDTH = 30
 var MAP_HEIGHT = 30
 var MAP = [
-    2,2,2,2,2,2,2,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
@@ -38,11 +33,11 @@ var MAP = [
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
-    2,0,0,0,0,0,0,0,0,0,0,3,1,1,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,2,
+    2,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,2,0,0,0,0,0,0,0,0,7,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,5,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,
-    2,0,2,0,0,0,0,0,0,0,0,3,1,1,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,2,
+    2,0,2,0,0,0,0,0,0,0,0,2,1,1,0,1,1,2,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,2,5,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
     2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,
@@ -73,13 +68,13 @@ class Game {
     Mouse.relative = true
     Mouse.hidden = true
 
-    __player = Player.new(Vec.new(7, 11), 0)
+    __player = Player.new(Vec.new(7, 11), 180)
     __sprites = [
       //Pillar.new(Vec.new(8, 13)),
       Pillar.new(Vec.new(9, 15)),
       Person.new(Vec.new(8, 13))
     ]
-    __doors = DOORS
+    __doors = []
     __map = TileMap.new(MAP_WIDTH, MAP_HEIGHT)
     for (y in 0...MAP_HEIGHT) {
       for (x in 0...MAP_WIDTH) {
@@ -91,10 +86,15 @@ class Game {
             "thin": -0.25
           }))
         } else {
+          var door
+          if (type == 5) {
+            door = Door.new(Vec.new(x, y))
+            __doors.add(door)
+          }
           __map.set(x, y, Tile.new(type, {
             "solid": type != 0,
-            "door": type == 5,
-            "thin": type == 5 ? 0.5 : null
+            "door": door,
+            "thin": null
           }))
         }
       }
@@ -109,7 +109,7 @@ class Game {
     __world.map = __map
     __textures = []
     __world.textures = __textures
-    // __world.floorTexture = Texture.importImg("res/floor.png")
+    __world.floorTexture = Texture.importImg("res/floor.png")
     // __world.ceilingTexture = Texture.importImg("res/ceil.png")
     __renderer = Renderer.init(__world, 320, 200)
 

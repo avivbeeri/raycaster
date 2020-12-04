@@ -37,7 +37,7 @@ class World {
     for (entity in entities) {
       var diffX = entity.pos.x - pos.x
       var diffY = entity.pos.y - pos.y
-      if ((diffX * diffX + diffY*diffY).sqrt <= (0.5 + 0.5)) {
+      if ((diffX * diffX + diffY*diffY).sqrt <= (0.75)) {
         solid = solid || entity.solid
       }
       if (solid) {
@@ -70,7 +70,7 @@ class World {
     //var mapPos = Vec.new(pos.x.round, pos.y.round)
     var tile = getTileAt(mapPos)
     var hit = false
-    if (tile["door"] == true) {
+    if (tile["door"]) {
       hit = getDoorAt(mapPos).state > 0.5
     } else {
       hit = tile["solid"] == true
